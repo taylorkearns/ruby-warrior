@@ -1,49 +1,74 @@
 require 'debugger'
 
 class Player
-  attr_accessor :health
+  attr_accessor :warrior
 
   WARRIOR_MAX_HEALTH = 20
 
   def initialize
-    @starting_health = WARRIOR_MAX_HEALTH
-    @ending_health = @starting_health
+    @warrior = {}
+    @previous_health = WARRIOR_MAX_HEALTH
   end
 
   def play_turn(warrior)
-    @starting_health = warrior.health
-    if taking_damage?
-      defense(warrior)
-    elsif warrior.feel(:forward).empty?
-      if warrior.health < WARRIOR_MAX_HEALTH
-        warrior.rest!
-      else
-        warrior.walk!
-      end
+    @warrior = warrior
+
+    if taking_damage? || hits_left <= 2
+      defend
+    elsif need_rest?
+      rest
     else
-      offense(warrior)
+      engage
     end
 
-    @ending_health = warrior.health
+    @previous_health = warrior.health
   end
 
-  def defense(warrior)
-    if warrior.feel(:forward).empty?
+  def engage
+    if warrior.feel.empty?
       warrior.walk!
-    else
+    elsif warrior.feel.captive?
+      warrior.rescue!
+    elsif warrior.feel.enemy?
       warrior.attack!
     end
   end
 
-  def offense(warrior)
-    if warrior.feel(:forward).captive?
-      warrior.rescue!
+  def defend
+    if taking_damage? && hits_left <= 2
+      retreat
+    elsif hits_left <= 2
+      rest
     else
-      warrior.attack!
+      engage
     end
+  end
+
+  def need_rest?
+    warrior.health < WARRIOR_MAX_HEALTH
+  end
+
+  def hits_left
+    if last_hit == 0
+      warrior.health / 3 # This is just an estimate
+    else
+      warrior.health / last_hit
+    end
+  end
+
+  def last_hit
+    @previous_health - warrior.health
+  end
+
+  def retreat
+    warrior.walk!(:backward)
+  end
+
+  def rest
+    warrior.rest!
   end
 
   def taking_damage?
-    @starting_health < @ending_health
+    warrior.health < @previous_health
   end
 end
