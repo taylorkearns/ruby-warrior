@@ -16,7 +16,7 @@ class Player
 
     if taking_damage? || hits_left <= 2
       defend
-    elsif need_rest?
+    elsif need_rest? && !level_completed?
       rest
     else
       explore
@@ -77,5 +77,9 @@ class Player
 
   def taking_damage?
     warrior.health < @previous_health
+  end
+
+  def level_completed?
+    warrior.feel.stairs?
   end
 end
