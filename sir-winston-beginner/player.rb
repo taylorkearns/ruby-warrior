@@ -8,13 +8,15 @@ class Player
   def initialize
     @warrior = {}
     @previous_health = WARRIOR_MAX_HEALTH
-    @direction = :backward
+    @direction = :forward
   end
 
   def play_turn(warrior)
     @warrior = warrior
 
-    if taking_damage? || hits_left <= 2
+    if warrior.feel.wall?
+      warrior.pivot!
+    elsif taking_damage? || hits_left <= 2
       defend
     elsif need_rest? && !level_completed?
       rest
@@ -26,9 +28,14 @@ class Player
   end
 
   def explore
-    @direction = :forward if warrior.feel(:backward).wall?
-
-    engage(@direction)
+    if warrior_moving_backward?
+      warrior.pivot!
+      @direction = :forward
+    elsif warrior.feel.wall?
+      warrior.pivot! 
+    else
+      engage(@direction)
+    end
   end
 
   def engage(dir)
@@ -36,6 +43,8 @@ class Player
       warrior.attack!(dir)
     elsif warrior.feel(dir).captive?
       warrior.rescue!(dir)
+    elsif warrior.feel(dir).wall?
+      warrior.pivot!
     else
       warrior.walk!(dir)
     end
@@ -49,6 +58,10 @@ class Player
     else
       engage(@direction)
     end
+  end
+
+  def warrior_moving_backward?
+    @direction == :backward && warrior.feel(:backward).empty?
   end
 
   def hits_left
