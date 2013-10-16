@@ -45,6 +45,8 @@ class Player
       warrior.rescue!(dir)
     elsif warrior.feel(dir).wall?
       warrior.pivot!
+    elsif clear_shot_at_enemy?
+      warrior.shoot!
     else
       warrior.walk!(dir)
     end
@@ -82,6 +84,15 @@ class Player
 
   def rest
     warrior.rest!
+  end
+
+  def clear_shot_at_enemy?
+    see_in_distance?('enemy', 1) ||
+      (see_in_distance?('enemy', 2) && !see_in_distance?('captive', 1))
+  end
+
+  def see_in_distance?(occupant, space)
+    @warrior.look[space].send("#{occupant}?")
   end
 
   def need_rest?
