@@ -1,7 +1,13 @@
 require 'debugger'
 
 class Player
+  extend Forwardable
+
   attr_accessor :warrior
+
+  delegate [:pivot!, :feel, :health] => :warrior
+
+  PRIORITIES = [Rotator, Defender, Rester, Explorer]
 
   WARRIOR_MAX_HEALTH = 20
 
@@ -11,11 +17,17 @@ class Player
     @direction = :forward
   end
 
+  def previous_health
+    @previous_health
+  end
+
   def play_turn(warrior)
     @warrior = warrior
 
-    if warrior.feel.wall?
-      warrior.pivot!
+    priority = PRIORITIES.find { |p| p.new(self).relevant? }
+
+    priority.new(self).perform_action
+
     elsif taking_damage? || hits_left <= 2
       defend
     elsif need_rest? && !level_completed?
