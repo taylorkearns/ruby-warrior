@@ -6,11 +6,13 @@ class Feeler
     @direction = direction
   end
 
+  def next_to_enemy?
+    space.enemy?
+  end
+
   def space_available?
     space.empty?
   end
-
-  private
 
   def space
     player.feel(direction)

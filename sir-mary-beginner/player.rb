@@ -6,6 +6,7 @@ class Player
   extend Forwardable
 
   delegate [:walk!, :feel] => :warrior
+  delegate [:attack!, :walk!, :feel] => :warrior
 
   attr_accessor :warrior
 
