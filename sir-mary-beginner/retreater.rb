@@ -8,4 +8,8 @@ class Retreater
   def relevant?
     player.low_health?
   end
+
+  def perform_action
+    player.walk!(:backward)
+  end
 end

@@ -17,7 +17,10 @@ describe Retreater do
   end
 
   describe '#perform_action' do
-    it '' do
+    it 'tells the player to retreat' do
+      expect(@player).to receive(:walk!).with(:backward)
+
+      @retreater.perform_action
     end
   end
 end
