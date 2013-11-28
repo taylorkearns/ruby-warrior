@@ -8,14 +8,14 @@ class Player
 
   delegate [:attack!, :walk!, :feel] => :warrior
 
-  attr_accessor :warrior, :health
+  attr_accessor :warrior
 
   PRIORITIES = [::Retreater, ::Attacker, ::Walker]
   MAX_HEALTH = 20
 
   def initialize
     @warrior = {}
-    @health = health
+    @previous_health = MAX_HEALTH
   end
 
   def play_turn(warrior)
@@ -25,11 +25,11 @@ class Player
 
     priority.new(self).perform_action
 
-    health = warrior.health
+    @previous_health = warrior.health
   end
 
   def low_health?
-    health <= low_health_threshold
+    warrior.health <= low_health_threshold
   end
 
   def next_to_enemy?
@@ -40,12 +40,16 @@ class Player
     Feeler.new(self).space_available?
   end
 
+  def taking_damage?
+    warrior.health < @previous_health
+  end
+
   def low_health_threshold
-    #return last_hit * 2 if last_hit
+    return last_hit * 2 if taking_damage?
     6
   end
 
-  def health
-    @_health ||= MAX_HEALTH
+  def last_hit
+    @previous_health - warrior.health
   end
 end
