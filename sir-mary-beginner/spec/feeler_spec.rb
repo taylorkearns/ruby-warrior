@@ -17,7 +17,7 @@ describe Feeler do
     end
   end
 
-  describe '.space_available?' do
+  describe '#space_available?' do
     it 'checks if space is empty' do
       expect(@feeler.space).to receive(:empty?)
 
