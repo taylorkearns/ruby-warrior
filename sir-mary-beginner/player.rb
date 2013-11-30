@@ -1,16 +1,18 @@
+require 'debugger'
 require 'forwardable'
-['walker', 'attacker', 'retreater', 'rester'].each do |klass|
+
+['walker', 'attacker', 'rescuer', 'retreater', 'rester'].each do |klass|
   require_relative klass
 end
 
 class Player
   extend Forwardable
 
-  delegate [:attack!, :walk!, :rest!, :feel] => :warrior
+  delegate [:attack!, :walk!, :rest!, :rescue!, :feel] => :warrior
 
   attr_accessor :warrior, :direction
 
-  PRIORITIES = [::Retreater, ::Rester, ::Attacker, ::Walker]
+  PRIORITIES = [::Retreater, ::Rester, ::Attacker, ::Rescuer, ::Walker]
   MAX_HEALTH = 20
 
   def initialize
@@ -35,6 +37,10 @@ class Player
 
   def next_to_enemy?
     space.enemy?
+  end
+
+  def next_to_captive?
+    space.captive?
   end
 
   def space_available?
