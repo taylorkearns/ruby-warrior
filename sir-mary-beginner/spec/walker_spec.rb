@@ -9,7 +9,7 @@ describe Walker do
   end
 
   describe '#relevant?' do
-    it 'checks for space in front of the player' do
+    it 'checks for space next to the player' do
       expect(@player).to receive(:space_available?)
 
       @walker.relevant?
@@ -17,8 +17,10 @@ describe Walker do
   end
 
   describe '#perform_action' do
-    it 'makes the player walk' do
-      expect(@player).to receive(:walk!)
+    it 'tells the player to walk' do
+      @walker.stub(:direction) { :forward }
+
+      expect(@player).to receive(:walk!).with(:forward)
 
       @walker.perform_action
     end

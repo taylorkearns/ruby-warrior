@@ -1,24 +1,35 @@
 require 'debugger'
 require 'forwardable'
 
-['walker', 'attacker', 'rescuer', 'retreater', 'rester'].each do |klass|
+['walker',
+ 'attacker',
+ 'rescuer',
+ 'retreater',
+ 'rester',
+ 'direction_switcher'].each do |klass|
   require_relative klass
 end
 
 class Player
   extend Forwardable
 
-  delegate [:attack!, :walk!, :rest!, :rescue!, :feel] => :warrior
+  delegate [:walk!, :rest!] => :warrior
 
   attr_accessor :warrior, :direction
 
-  PRIORITIES = [::Retreater, ::Rester, ::Attacker, ::Rescuer, ::Walker]
+  PRIORITIES = [::Retreater,
+                ::Rester,
+                ::Attacker,
+                ::Rescuer,
+                ::DirectionSwitcher,
+                ::Walker]
+
   MAX_HEALTH = 20
 
   def initialize
     @warrior = {}
     @previous_health = MAX_HEALTH
-    @direction = :forward
+    @direction = :backward
   end
 
   def play_turn(warrior)
@@ -31,24 +42,16 @@ class Player
     @previous_health = warrior.health
   end
 
-  def low_health?
-    warrior.health <= low_health_threshold
+  def attack!
+    warrior.attack!(direction)
   end
 
-  def next_to_enemy?
-    space.enemy?
+  def rescue!
+    warrior.rescue!(direction)
   end
 
-  def next_to_captive?
-    space.captive?
-  end
-
-  def space_available?
-    space.empty?
-  end
-
-  def taking_damage?
-    warrior.health < @previous_health
+  def switch_direction(new_direction)
+    self.direction = new_direction
   end
 
   def low_health_threshold
@@ -62,6 +65,30 @@ class Player
   end
 
   def space
-    feel(direction)
+    warrior.feel(direction)
+  end
+
+  def space_available?
+    space.empty?
+  end
+
+  def next_to_wall?
+    space.wall?
+  end
+
+  def next_to_enemy?
+    space.enemy?
+  end
+
+  def next_to_captive?
+    space.captive?
+  end
+
+  def taking_damage?
+    warrior.health < @previous_health
+  end
+
+  def low_health?
+    warrior.health <= low_health_threshold
   end
 end

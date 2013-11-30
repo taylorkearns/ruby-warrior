@@ -1,8 +1,9 @@
 class Retreater
-  attr_reader :player
+  attr_reader :player, :direction
 
   def initialize(player)
     @player = player
+    @direction = player.direction
   end
 
   def relevant?
@@ -10,6 +11,16 @@ class Retreater
   end
 
   def perform_action
-    player.walk!(:backward)
+    player.walk!(retreat_direction)
+  end
+
+  private
+
+  def retreat_direction
+    if direction == :forward
+      :backward
+    else
+      :forward
+    end
   end
 end

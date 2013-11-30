@@ -1,5 +1,6 @@
 require 'spec_helper'
 require_relative '../attacker'
+require_relative '../player'
 
 describe Attacker do
   before do

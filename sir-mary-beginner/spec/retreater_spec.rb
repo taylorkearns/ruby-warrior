@@ -32,8 +32,18 @@ describe Retreater do
   end
 
   describe '#perform_action' do
-    it 'tells the player to retreat' do
+    it 'tells the player to go backward if going forward' do
+      @retreater.stub(:direction) { :forward }
+
       expect(@player).to receive(:walk!).with(:backward)
+
+      @retreater.perform_action
+    end
+
+    it 'tells the player to go forward if going backward' do
+      @retreater.stub(:direction) { :backward }
+
+      expect(@player).to receive(:walk!).with(:forward)
 
       @retreater.perform_action
     end

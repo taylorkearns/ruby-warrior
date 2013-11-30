@@ -1,8 +1,9 @@
 class Walker
-  attr_reader :player
+  attr_reader :player, :direction
 
   def initialize(player)
     @player = player
+    @direction = player.direction
   end
 
   def relevant?
@@ -10,6 +11,6 @@ class Walker
   end
 
   def perform_action
-    player.walk!
+    player.walk!(direction)
   end
 end
