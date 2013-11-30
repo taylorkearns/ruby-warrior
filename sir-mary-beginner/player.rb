@@ -46,8 +46,9 @@ class Player
   end
 
   def low_health_threshold
-    return last_hit * 2 if taking_damage?
-    6
+    return last_hit * 3 if taking_damage?
+
+    MAX_HEALTH - 1
   end
 
   def last_hit
