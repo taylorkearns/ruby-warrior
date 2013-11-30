@@ -1,5 +1,5 @@
 require 'forwardable'
-['feeler', 'walker', 'attacker', 'retreater', 'rester'].each do |klass|
+['walker', 'attacker', 'retreater', 'rester'].each do |klass|
   require_relative klass
 end
 
@@ -8,7 +8,7 @@ class Player
 
   delegate [:attack!, :walk!, :rest!, :feel] => :warrior
 
-  attr_accessor :warrior
+  attr_accessor :warrior, :direction
 
   PRIORITIES = [::Retreater, ::Rester, ::Attacker, ::Walker]
   MAX_HEALTH = 20
@@ -16,6 +16,7 @@ class Player
   def initialize
     @warrior = {}
     @previous_health = MAX_HEALTH
+    @direction = :forward
   end
 
   def play_turn(warrior)
@@ -33,11 +34,11 @@ class Player
   end
 
   def next_to_enemy?
-    Feeler.new(self).next_to_enemy?
+    space.enemy?
   end
 
   def space_available?
-    Feeler.new(self).space_available?
+    space.empty?
   end
 
   def taking_damage?
@@ -51,5 +52,9 @@ class Player
 
   def last_hit
     @previous_health - warrior.health
+  end
+
+  def space
+    feel(direction)
   end
 end
