@@ -1,5 +1,5 @@
 require 'forwardable'
-['feeler', 'walker', 'attacker', 'retreater'].each do |klass|
+['feeler', 'walker', 'attacker', 'retreater', 'rester'].each do |klass|
   require_relative klass
 end
 
@@ -10,7 +10,7 @@ class Player
 
   attr_accessor :warrior
 
-  PRIORITIES = [::Retreater, ::Attacker, ::Walker]
+  PRIORITIES = [::Retreater, ::Rester, ::Attacker, ::Walker]
   MAX_HEALTH = 20
 
   def initialize

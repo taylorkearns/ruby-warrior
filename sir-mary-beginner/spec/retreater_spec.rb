@@ -9,10 +9,25 @@ describe Retreater do
   end
 
   describe '#relevant?' do
-    it 'checks for low health' do
-      expect(@player).to receive(:low_health?)
+    it 'returns true when health is low and player is taking damage' do
+      @player.stub(:low_health?) { true }
+      @player.stub(:taking_damage?) { true }
 
-      @retreater.relevant?
+      expect(@retreater.relevant?).to be_true
+    end
+
+    it 'returns false when health is low but player is not taking damage' do
+      @player.stub(:low_health?) { true }
+      @player.stub(:taking_damage?) { false }
+
+      expect(@retreater.relevant?).to be_false
+    end
+
+    it 'returns false when health is not low but player is taking damage' do
+      @player.stub(:low_health?) { false }
+      @player.stub(:taking_damage?) { true }
+
+      expect(@retreater.relevant?).to be_false
     end
   end
 

@@ -6,7 +6,7 @@ class Retreater
   end
 
   def relevant?
-    player.low_health?
+    player.low_health? && player.taking_damage?
   end
 
   def perform_action
