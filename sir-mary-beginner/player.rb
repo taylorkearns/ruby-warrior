@@ -6,14 +6,15 @@ require 'forwardable'
  'rescuer',
  'retreater',
  'rester',
- 'direction_switcher'].each do |klass|
+ 'direction_switcher',
+ 'pivoter'].each do |klass|
   require_relative klass
 end
 
 class Player
   extend Forwardable
 
-  delegate [:walk!, :rest!] => :warrior
+  delegate [:walk!, :rest!, :pivot!] => :warrior
 
   attr_accessor :warrior, :direction
 
@@ -22,6 +23,7 @@ class Player
                 ::Attacker,
                 ::Rescuer,
                 ::DirectionSwitcher,
+                ::Pivoter,
                 ::Walker]
 
   MAX_HEALTH = 20
@@ -68,8 +70,8 @@ class Player
     warrior.feel(direction)
   end
 
-  def space_available?
-    space.empty?
+  def facing_wall?
+    next_to_wall? && direction == :forward
   end
 
   def next_to_wall?
@@ -82,6 +84,10 @@ class Player
 
   def next_to_captive?
     space.captive?
+  end
+
+  def space_available?
+    space.empty?
   end
 
   def taking_damage?

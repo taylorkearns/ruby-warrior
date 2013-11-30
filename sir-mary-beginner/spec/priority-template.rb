@@ -4,7 +4,7 @@ require_relative '../'
 describe Class do
   before do
     @player = Player.new
-    @class - Class.new(@player)
+    @class = Class.new(@player)
   end
 
   describe '#relevant?' do
