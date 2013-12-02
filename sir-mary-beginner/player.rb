@@ -14,7 +14,7 @@ end
 class Player
   extend Forwardable
 
-  delegate [:walk!, :rest!, :pivot!] => :warrior
+  delegate [:walk!, :rest!, :pivot!, :shoot!, :look] => :warrior
 
   attr_accessor :warrior, :direction
 
@@ -78,12 +78,12 @@ class Player
     space.wall?
   end
 
-  def next_to_enemy?
-    space.enemy?
-  end
-
   def next_to_captive?
     space.captive?
+  end
+
+  def next_to_enemy?
+    space.enemy?
   end
 
   def space_available?
@@ -96,5 +96,21 @@ class Player
 
   def low_health?
     warrior.health <= low_health_threshold
+  end
+
+  def empty_at?(space)
+    look[space].empty?
+  end
+
+  def captive_at?(space)
+    look[space] && look[space].captive?
+  end
+
+  def enemy_at?(space)
+    look[space].enemy?
+  end
+
+  def visible_spaces
+    (0..2)
   end
 end
