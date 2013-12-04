@@ -14,7 +14,7 @@ end
 class Player
   extend Forwardable
 
-  delegate [:walk!, :rest!, :pivot!, :shoot!, :look] => :warrior
+  delegate [:walk!, :rest!, :pivot!, :look] => :warrior
 
   attr_accessor :warrior, :direction
 
@@ -42,6 +42,10 @@ class Player
     priority.new(self).perform_action
 
     @previous_health = warrior.health
+  end
+
+  def shoot!
+    warrior.shoot!(direction)
   end
 
   def attack!
@@ -99,15 +103,16 @@ class Player
   end
 
   def empty_at?(space)
-    look[space].empty?
+    look(direction)[space].empty?
   end
 
   def captive_at?(space)
-    look[space] && look[space].captive?
+    look(direction)[space] &&
+      look(direction)[space].captive?
   end
 
   def enemy_at?(space)
-    look[space].enemy?
+    look(direction)[space].enemy?
   end
 
   def visible_spaces
