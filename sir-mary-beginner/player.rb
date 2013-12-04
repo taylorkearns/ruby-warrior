@@ -16,22 +16,25 @@ class Player
 
   delegate [:walk!, :rest!, :pivot!, :look] => :warrior
 
-  attr_accessor :warrior, :direction
+  attr_accessor :warrior, :direction, :directions_traveled
 
-  PRIORITIES = [::Retreater,
-                ::Rester,
-                ::Attacker,
-                ::Rescuer,
-                ::DirectionSwitcher,
-                ::Pivoter,
-                ::Walker]
+  PRIORITIES ||= [::Retreater,
+                  ::Rester,
+                  ::Attacker,
+                  ::Rescuer,
+                  ::DirectionSwitcher,
+                  ::Pivoter,
+                  ::Walker]
 
-  MAX_HEALTH = 20
+  DIRECTIONS ||= [:forward, :backward]
+
+  MAX_HEALTH ||= 20
 
   def initialize
     @warrior = {}
     @previous_health = MAX_HEALTH
     @direction = :backward
+    @directions_traveled = [@direction]
   end
 
   def play_turn(warrior)
@@ -58,6 +61,8 @@ class Player
 
   def switch_direction(new_direction)
     self.direction = new_direction
+
+    directions_traveled << new_direction
   end
 
   def low_health_threshold
@@ -72,6 +77,18 @@ class Player
 
   def space
     warrior.feel(direction)
+  end
+
+  def visible_spaces
+    (0..2)
+  end
+
+  def unvisited_spaces?
+    directions_traveled.uniq.count < DIRECTIONS.count
+  end
+
+  def at_stairs?
+    space.stairs?
   end
 
   def facing_wall?
@@ -113,9 +130,5 @@ class Player
 
   def enemy_at?(space)
     look(direction)[space].enemy?
-  end
-
-  def visible_spaces
-    (0..2)
   end
 end

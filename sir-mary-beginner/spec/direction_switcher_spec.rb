@@ -9,14 +9,24 @@ describe DirectionSwitcher do
   end
 
   describe '#relevant?' do
-    it 'returns true if player is up against a wall' do
+    it 'is true if player is up against a wall' do
       @player.stub(:next_to_wall?) { true }
+      @direction_switcher.stub(:more_achievements_available?) { false }
 
       expect(@direction_switcher.relevant?).to be_true
     end
 
-    it 'returns false if player is not up against a wall' do
+    it 'is true if there are more achievements available' do
       @player.stub(:next_to_wall?) { false }
+      @direction_switcher.stub(:more_achievements_available?) { true }
+
+      expect(@direction_switcher.relevant?).to be_true
+    end
+
+    it 'is false if player is not up against a wall
+        and no more achievements are available' do
+      @player.stub(:next_to_wall?) { false }
+      @direction_switcher.stub(:more_achievements_available?) { false }
 
       expect(@direction_switcher.relevant?).to be_false
     end
