@@ -1,3 +1,8 @@
+# change @previous_health to a method
+# add tests to Player methods where appropriate
+# see where Player methods are being used, if only on other classes move them to that class
+# look for places to make methods private
+
 require 'debugger'
 require 'forwardable'
 
@@ -33,7 +38,7 @@ class Player
   def initialize
     @warrior = {}
     @previous_health = MAX_HEALTH
-    @direction = :backward
+    @direction = :forward
     @directions_traveled = [@direction]
   end
 
