@@ -1,3 +1,4 @@
+# prioritize enemies
 # change @previous_health to a method
 # add tests to Player methods where appropriate
 # see where Player methods are being used, if only on other classes move them to that class
@@ -86,6 +87,13 @@ class Player
 
   def visible_spaces
     (0..2)
+  end
+
+  def shot_from_behind?
+    taking_damage? && closest_shooter_behind?
+  end
+
+  def closest_shooter_behind?
   end
 
   def unvisited_spaces?

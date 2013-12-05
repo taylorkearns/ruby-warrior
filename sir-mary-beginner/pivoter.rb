@@ -6,7 +6,7 @@ class Pivoter
   end
 
   def relevant?
-    player.facing_wall?
+    player.facing_wall? || player.shot_from_behind?
   end
 
   def perform_action
