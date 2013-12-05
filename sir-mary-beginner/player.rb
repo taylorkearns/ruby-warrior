@@ -1,3 +1,4 @@
+# prioritize enemies
 # change @previous_health to a method
 # add tests to Player methods where appropriate
 # see where Player methods are being used, if only on other classes move them to that class
@@ -23,12 +24,12 @@ class Player
 
   attr_accessor :warrior, :direction, :directions_traveled
 
-  PRIORITIES ||= [::Retreater,
+  PRIORITIES ||= [::Pivoter,
+                  ::Retreater,
                   ::Rester,
                   ::Attacker,
                   ::Rescuer,
                   ::DirectionSwitcher,
-                  ::Pivoter,
                   ::Walker]
 
   DIRECTIONS ||= [:forward, :backward]
@@ -71,7 +72,7 @@ class Player
   end
 
   def low_health_threshold
-    return last_hit * 3 if taking_damage?
+    return (last_hit * 2.5).to_i if taking_damage?
 
     MAX_HEALTH - 1
   end
@@ -86,6 +87,30 @@ class Player
 
   def visible_spaces
     (0..2)
+  end
+
+  def opposite_direction
+    if direction == :forward
+      :backward
+    else
+      :forward
+    end
+  end
+
+  def shot_from_behind?
+    taking_damage? && closest_shooter_behind?
+  end
+
+  def closest_shooter_behind?
+    visible_spaces.each do |space|
+      if shooter_at?(space)
+        return false
+      elsif shooter_behind_at?(space)
+        return true
+      end
+    end
+
+    false
   end
 
   def unvisited_spaces?
@@ -135,5 +160,15 @@ class Player
 
   def enemy_at?(space)
     look(direction)[space].enemy?
+  end
+
+  def shooter_at?(space)
+    look(direction)[space].character == 'a' ||
+      look(direction)[space].character == 'w'
+  end
+
+  def shooter_behind_at?(space)
+    look(opposite_direction)[space].character == 'a' ||
+      look(opposite_direction)[space].character == 'w'
   end
 end
