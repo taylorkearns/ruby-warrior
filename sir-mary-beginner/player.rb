@@ -26,10 +26,10 @@ class Player
 
   PRIORITIES ||= [::Retreater,
                   ::Rester,
+                  ::Pivoter,
                   ::Attacker,
                   ::Rescuer,
                   ::DirectionSwitcher,
-                  ::Pivoter,
                   ::Walker]
 
   DIRECTIONS ||= [:forward, :backward]
@@ -89,11 +89,28 @@ class Player
     (0..2)
   end
 
+  def opposite_direction
+    if direction == :forward
+      :backward
+    else
+      :forward
+    end
+  end
+
   def shot_from_behind?
     taking_damage? && closest_shooter_behind?
   end
 
   def closest_shooter_behind?
+    visible_spaces.each do |space|
+      if shooter_at?(space)
+        return false
+      elsif shooter_behind_at?(space)
+        return true
+      end
+    end
+
+    false
   end
 
   def unvisited_spaces?
@@ -143,5 +160,15 @@ class Player
 
   def enemy_at?(space)
     look(direction)[space].enemy?
+  end
+
+  def shooter_at?(space)
+    look(direction)[space].archer? ||
+      look(direction)[space].wizard?
+  end
+
+  def shooter_behind_at?(space)
+    look(opposite_direction)[space].archer? ||
+      look(opposite_direction)[space].wizard?
   end
 end
