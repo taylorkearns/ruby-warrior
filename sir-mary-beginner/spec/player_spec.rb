@@ -7,6 +7,22 @@ describe Player do
     @player = Player.new
   end
 
+  describe '#low_health_threshold' do
+    it 'is 2.5 times the last hit if player is taking damage' do
+      @player.stub(:taking_damage?) { true }
+      @player.stub(:last_hit) { 4 }
+
+      expect(@player.low_health_threshold).to eq 10
+    end
+
+    it 'is 1 less than max health if player is not taking damage' do
+      @player.stub(:taking_damage?) { false }
+      @player.stub(:last_hit) { 0 }
+
+      expect(@player.low_health_threshold).to eq 19
+    end
+  end
+
   describe '#shot_from_behind?' do
     it 'is true if taking damage and a shooter is visible in the other direction' do
       @player.stub(:taking_damage?) { true }
