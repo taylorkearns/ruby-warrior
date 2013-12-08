@@ -24,9 +24,9 @@ class Player
 
   attr_accessor :warrior, :direction, :directions_traveled
 
-  PRIORITIES ||= [::Retreater,
+  PRIORITIES ||= [::Pivoter,
+                  ::Retreater,
                   ::Rester,
-                  ::Pivoter,
                   ::Attacker,
                   ::Rescuer,
                   ::DirectionSwitcher,
@@ -72,7 +72,7 @@ class Player
   end
 
   def low_health_threshold
-    return last_hit * 3 if taking_damage?
+    return (last_hit * 2.5).to_i if taking_damage?
 
     MAX_HEALTH - 1
   end
@@ -163,12 +163,12 @@ class Player
   end
 
   def shooter_at?(space)
-    look(direction)[space].archer? ||
-      look(direction)[space].wizard?
+    look(direction)[space].character == 'a' ||
+      look(direction)[space].character == 'w'
   end
 
   def shooter_behind_at?(space)
-    look(opposite_direction)[space].archer? ||
-      look(opposite_direction)[space].wizard?
+    look(opposite_direction)[space].character == 'a' ||
+      look(opposite_direction)[space].character == 'w'
   end
 end
