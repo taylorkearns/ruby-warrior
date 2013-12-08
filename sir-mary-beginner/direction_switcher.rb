@@ -1,7 +1,7 @@
 class DirectionSwitcher
   extend Forwardable
 
-  delegate [:next_to_wall?, :at_stairs?, :unvisited_spaces?] => :player
+  delegate [:next_to_wall?, :at_stairs?, :traveled_all_directions] => :player
 
   attr_reader :player, :direction
 
@@ -11,17 +11,19 @@ class DirectionSwitcher
   end
 
   def relevant?
-    next_to_wall? || more_achievements_available?
+    next_to_wall? || unexplored_spaces?
   end
 
   def perform_action
     player.switch_direction(new_direction)
+
+    player.traveled_all_directions = true
   end
 
   private
 
-  def more_achievements_available?
-    at_stairs? && unvisited_spaces?
+  def unexplored_spaces?
+    at_stairs? && !traveled_all_directions
   end
 
   def new_direction
