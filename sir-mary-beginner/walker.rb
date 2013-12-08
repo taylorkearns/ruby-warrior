@@ -7,7 +7,7 @@ class Walker
   end
 
   def relevant?
-    player.space_available?
+    player.space.empty?
   end
 
   def perform_action

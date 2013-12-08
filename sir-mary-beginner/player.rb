@@ -1,6 +1,3 @@
-# see where Player methods are being used, if only on other classes move them to that class
-# look for places to make methods private
-
 require 'debugger'
 require 'forwardable'
 
@@ -52,32 +49,6 @@ class Player
     self.previous_health = warrior.health
   end
 
-  def shoot!
-    warrior.shoot!(direction)
-  end
-
-  def attack!
-    warrior.attack!(direction)
-  end
-
-  def rescue!
-    warrior.rescue!(direction)
-  end
-
-  def switch_direction(new_direction)
-    self.direction = new_direction
-  end
-
-  def low_health_threshold
-    return (last_hit * 2.5).to_i if taking_damage?
-
-    MAX_HEALTH - 1
-  end
-
-  def last_hit
-    previous_health - warrior.health
-  end
-
   def space
     warrior.feel(direction)
   end
@@ -90,52 +61,8 @@ class Player
     (0..2)
   end
 
-  def opposite_direction
-    if direction == :forward
-      :backward
-    else
-      :forward
-    end
-  end
-
-  def shot_from_behind?
-    taking_damage? && closest_shooter_behind?
-  end
-
-  def closest_shooter_behind?
-    visible_spaces.each do |space|
-      if shooter_at?(space)
-        return false
-      elsif shooter_behind_at?(space)
-        return true
-      end
-    end
-
-    false
-  end
-
-  def at_stairs?
-    space.stairs?
-  end
-
-  def facing_wall?
-    next_to_wall? && direction == :forward
-  end
-
   def next_to_wall?
     space.wall?
-  end
-
-  def next_to_captive?
-    space.captive?
-  end
-
-  def next_to_enemy?
-    space.enemy?
-  end
-
-  def space_available?
-    space.empty?
   end
 
   def taking_damage?
@@ -146,26 +73,23 @@ class Player
     warrior.health <= low_health_threshold
   end
 
-  def empty_at?(space)
-    look(direction)[space].empty?
+  private
+
+  def low_health_threshold
+    return (last_hit * 2.5).to_i if taking_damage?
+
+    MAX_HEALTH - 1
   end
 
-  def captive_at?(space)
-    look(direction)[space] &&
-      look(direction)[space].captive?
+  def last_hit
+    previous_health - warrior.health
   end
 
-  def enemy_at?(space)
-    look(direction)[space].enemy?
-  end
-
-  def shooter_at?(space)
-    look(direction)[space].character == 'a' ||
-      look(direction)[space].character == 'w'
-  end
-
-  def shooter_behind_at?(space)
-    look(opposite_direction)[space].character == 'a' ||
-      look(opposite_direction)[space].character == 'w'
+  def opposite_direction
+    if direction == :forward
+      :backward
+    else
+      :forward
+    end
   end
 end

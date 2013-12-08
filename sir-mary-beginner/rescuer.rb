@@ -1,4 +1,10 @@
+require 'forwardable'
+
 class Rescuer
+  extend Forwardable
+
+  delegate [:warrior, :direction] => :player
+
   attr_reader :player
 
   def initialize(player)
@@ -6,10 +12,10 @@ class Rescuer
   end
 
   def relevant?
-    player.next_to_captive?
+    player.space.captive?
   end
 
   def perform_action
-    player.rescue!
+    warrior.rescue!(direction)
   end
 end
