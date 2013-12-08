@@ -1,6 +1,3 @@
-# prioritize enemies
-# change @previous_health to a method
-# add tests to Player methods where appropriate
 # see where Player methods are being used, if only on other classes move them to that class
 # look for places to make methods private
 
@@ -22,7 +19,7 @@ class Player
 
   delegate [:walk!, :rest!, :pivot!, :look] => :warrior
 
-  attr_accessor :warrior, :direction, :traveled_all_directions
+  attr_accessor :warrior, :previous_health, :direction, :traveled_all_directions
 
   PRIORITIES ||= [::Pivoter,
                   ::Retreater,
@@ -52,7 +49,7 @@ class Player
 
     priority.new(self).perform_action
 
-    @previous_health = warrior.health
+    self.previous_health = warrior.health
   end
 
   def shoot!
@@ -78,7 +75,7 @@ class Player
   end
 
   def last_hit
-    @previous_health - warrior.health
+    previous_health - warrior.health
   end
 
   def space
@@ -142,7 +139,7 @@ class Player
   end
 
   def taking_damage?
-    warrior.health < @previous_health
+    warrior.health < previous_health
   end
 
   def low_health?
