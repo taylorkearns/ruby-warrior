@@ -1,9 +1,7 @@
-require 'forwardable'
-
 class Rescuer
   extend Forwardable
 
-  delegate [:warrior, :direction] => :player
+  delegate [:direction, :space] => :player
 
   attr_reader :player
 
@@ -12,10 +10,10 @@ class Rescuer
   end
 
   def relevant?
-    player.space.captive?
+    space.captive?
   end
 
   def perform_action
-    warrior.rescue!(direction)
+    player.rescue!(direction)
   end
 end

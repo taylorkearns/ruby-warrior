@@ -3,7 +3,7 @@ require 'forwardable'
 class Attacker
   extend Forwardable
 
-  delegate [:direction, :visible_spaces, :warrior, :direction] => :player
+  delegate [:direction, :visible_spaces, :direction] => :player
 
   attr_reader :player
 
@@ -16,7 +16,7 @@ class Attacker
   end
 
   def perform_action
-    warrior.shoot!(direction)
+    player.shoot!(direction)
   end
 
   private

@@ -14,7 +14,7 @@ end
 class Player
   extend Forwardable
 
-  delegate [:walk!, :rest!, :pivot!, :look] => :warrior
+  delegate [:walk!, :rescue!, :rest!, :pivot!, :shoot!, :look] => :warrior
 
   attr_accessor :warrior, :previous_health, :direction, :traveled_all_directions
 
@@ -73,16 +73,10 @@ class Player
     warrior.health <= low_health_threshold
   end
 
-  private
-
   def low_health_threshold
     return (last_hit * 2.5).to_i if taking_damage?
 
     MAX_HEALTH - 1
-  end
-
-  def last_hit
-    previous_health - warrior.health
   end
 
   def opposite_direction
@@ -91,5 +85,11 @@ class Player
     else
       :forward
     end
+  end
+
+  private
+
+  def last_hit
+    previous_health - warrior.health
   end
 end

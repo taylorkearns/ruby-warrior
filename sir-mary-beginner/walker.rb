@@ -1,13 +1,16 @@
 class Walker
-  attr_reader :player, :direction
+  extend Forwardable
+
+  delegate [:direction, :space] => :player
+
+  attr_reader :player
 
   def initialize(player)
     @player = player
-    @direction = player.direction
   end
 
   def relevant?
-    player.space.empty?
+    space.empty?
   end
 
   def perform_action

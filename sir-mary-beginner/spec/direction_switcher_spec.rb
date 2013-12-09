@@ -36,17 +36,17 @@ describe DirectionSwitcher do
     it 'tells the player to go forward if going backward' do
       @direction_switcher.stub(:direction) { :backward }
 
-      expect(@player).to receive(:switch_direction).with(:forward)
-
       @direction_switcher.perform_action
+
+      expect(@player.direction).to eq :forward
     end
 
     it 'tells the player to go backward if going forward' do
       @direction_switcher.stub(:direction) { :forward }
 
-      expect(@player).to receive(:switch_direction).with(:backward)
-
       @direction_switcher.perform_action
+
+      expect(@player.direction).to eq :backward
     end
   end
 end

@@ -1,13 +1,9 @@
-require 'forwardable'
-
 class Pivoter
   extend Forwardable
 
   delegate [:visible_spaces,
             :direction,
-            :opposite_direction,
-            :shooter_behind_at?,
-            :shooter_at?] => :player
+            :opposite_direction] => :player
 
   attr_reader :player
 

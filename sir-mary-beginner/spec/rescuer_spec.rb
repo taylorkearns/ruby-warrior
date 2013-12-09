@@ -9,21 +9,24 @@ describe Rescuer do
   end
 
   describe '#relevant?' do
-    it 'returns true when player is next to a captive' do
-      @player.stub(:next_to_captive?) { true }
+    it 'is true when player is next to a captive' do
+      # Why does this stubbing work on Walker spec but not Rescuer spec?
+      space = stub(captive?: true)
+      @player.stub(space: space)
 
       expect(@rescuer.relevant?).to be_true
     end
 
-    it 'returns false when player is next to a captive' do
-      @player.stub(:next_to_captive?) { false }
+    it 'is false when player is not next to a captive' do
+      space = stub(captive?: false)
+      @player.stub(space: space)
 
       expect(@rescuer.relevant?).to be_false
     end
   end
 
   describe '#perform_action' do
-    it 'tells the player to rescue the captive' do
+    it 'directs the player to rescue the captive' do
       expect(@player).to receive(:rescue!)
 
       @rescuer.perform_action
